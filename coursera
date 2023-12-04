@@ -1,0 +1,167 @@
+#gg plot
+
+#library for gg
+library(ggplot2)
+cel=diamonds
+cel
+names(cel)
+dim(cel)
+table(cel$cut)
+
+library(dplyr)
+fig=cel%>% filter(cut=="Premium") %>% select("price","depth")
+fig
+
+head(fig)
+
+ggplot(fig,aes(x=price,y=depth))
+
+#adding marks using goem_point()
+ggplot(fig, aes(x = price, y = depth)) +
+  geom_point()
+
+
+#jitter adds random noise to the data to avoid overplotting
+#rather than using geom point we use geom jitter
+
+ggplot(fig, aes(x = price, y = depth)) +
+  geom_jitter()
+
+
+#adding some labels and title
+#using labs function
+
+ggplot(fig, aes(x = price, y = depth)) +
+  geom_jitter()+
+  labs(x="price",y="depth",title="hehehehehe")
+
+
+# modifying table
+
+fig=cel%>% filter(cut=="Premium") %>% select("price","depth","table")
+fig$table
+
+
+#if there is a column which only has o or 1 we can use recode them after selecting
+#example
+#party=recode(fig1$dem,'1'="democrat",'0'="republic")
+#after this different colors will appear
+
+ggplot(fig, aes(x = price, y = depth)) +
+  geom_jitter()+
+  labs(x="price",y="depth",title="hehehehehe")+
+  scale_color_manual(values=c("blue","red"))
+
+
+
+#making two separate plots usingg facet wrap
+
+ggplot(fig, aes(x = price, y = depth)) +
+  geom_jitter()+
+  labs(x="price",y="depth",title="hehehehehe")+
+  scale_color_manual(values=c("blue","red"))+
+  facet_wrap(~party)
+
+
+
+#histograms ans densities using gg
+ggplot(data = diamonds,aes(x=carat)) + geom_histogram()
+ggplot(data = diamonds,aes(x=carat),fill="grey50") + geom_density()
+
+
+#scatter plot using gg
+
+ggplot(diamonds, aes(x = carat, y = price)) + geom_point()
+
+g <- ggplot(diamonds, aes(x = carat, y = price))
+g + geom_point(aes(color = color))
+g + geom_point(aes(color = color)) + facet_wrap(~color)
+g + geom_point(aes(color = color)) + facet_grid(cut ~ clarity)
+
+
+ggplot(diamonds, aes(x = carat)) + geom_histogram() + facet_wrap(~color)
+ggplot(diamonds, aes(y = carat, x = 1)) + geom_boxplot()
+ggplot(diamonds, aes(y = carat, x = cut)) + geom_boxplot()
+ggplot(diamonds, aes(y = carat, x = cut)) + geom_violin()
+
+ggplot(diamonds, aes(y = carat, x = cut)) + geom_point() + geom_violin()
+ggplot(diamonds, aes(y = carat, x = cut)) + geom_violin() + geom_point()
+
+ggplot(economics, aes(x = date, y = pop)) + geom_line()
+
+
+# 6.3 More Plots using ggplots
+
+install.packages("lubridate")
+#The lubridate package is designed for handling date and time data in R. 
+#It simplifies the manipulation and parsing of date-time objects.
+#Parsing and Formatting: It provides functions to parse character vectors 
+#into date-time objects (ymd(), dmy(), hms()) and 
+#format date-time objects into character strings (format()).
+
+#Arithmetic Operations: You can perform arithmetic operations directly on date-time objects,
+#such as adding or subtracting time intervals (days(), hours(), minutes()).
+
+#Extraction: Easily extract components like year, month, day, hour, minute, and second 
+#from date-time objects (year(), month(), day(), etc.).
+
+#Time Zones: It allows you to work with time zones and convert date-time objects 
+#between different time zones (with_tz()).
+
+#Periods: Represents time durations and periods, allowing for intuitive operations with 
+#time (duration(), period()).
+
+
+
+
+install.packages("scales")
+#The scales package in R provides functions for transforming and formatting scales 
+#in visualizations, particularly when working with the ggplot2 package. 
+#It allows you to customize the appearance of axes and legends in your plots.
+#main functions are log10_scale(),log2_scale()
+library(lubridate)
+library(scales)
+library(ggplot2)
+economics$year=year(economics$date)
+economics$year
+economics$month <- month(economics$date, label=TRUE)
+economics$month
+econ2000 <- economics[economics$year >= 2000, ]
+econ2000
+# build the foundation of the plot
+g <- ggplot(econ2000, aes(x=month, y=pop))
+g
+# add lines color coded and grouped by year
+# the group aesthetic breaks the data into separate groups
+g <- g + geom_line(aes(color=factor(year), group=year))
+#here we are colouring every factor which is different and making a group on the side
+g
+# name the legend "Year"
+g <- g + scale_color_discrete(name="Year")
+g
+# format the y axis
+g <- g + scale_y_continuous(labels=comma)
+g
+# add a title and axis labels
+g <- g + labs(title="Population Growth", x="Month", y="Population")
+
+# plot the graph
+g
+
+
+# 6.4 Mpore on ggplots
+#working with gg themes
+#we can include a variety of predefined themes  that we can apply to out ggplot
+
+install.packages("ggthemes")
+library(ggthemes)
+# build a plot and store it in g2
+g2 <- ggplot(diamonds, aes(x=carat, y=price)) + geom_point(aes(color=color))
+g2
+# apply a few themes
+g2 + theme_economist() + scale_colour_economist()
+g2 + theme_excel() + scale_colour_excel()
+g2 + theme_tufte()
+g2 + theme_wsj()
+
+setwd("C:\\Users\\nipun\\OneDrive\\Desktop\\se project")
